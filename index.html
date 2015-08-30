@@ -15,7 +15,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
 		<link rel="stylesheet" href="reveal.js/css/reveal.css">
-		<link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+		<link rel="stylesheet" href="reveal.js/css/theme/igalia.css" id="theme">
 
 		<!-- Code syntax highlighting -->
 		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
@@ -62,6 +62,8 @@
 				center: true,
 
 				transition: 'slide', // none/fade/slide/convex/concave/zoom
+				width: 1920,
+				height: 1080,
 
 				// Optional reveal.js plugins
 				dependencies: [
@@ -70,7 +72,11 @@
 					{ src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
 					{ src: 'reveal.js/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
 					{ src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
-					{ src: 'reveal.js/plugin/notes/notes.js', async: true }
+					{ src: 'reveal.js/plugin/notes/notes.js', async: true },
+					{ src: 'reveal.js/plugin/title-footer/title-footer.js', async: true, callback: function() { title_footer.initialize({
+						title: 'DEVIEW 2015'
+						}); }
+					}
 				]
 			});
 

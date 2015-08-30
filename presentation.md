@@ -5,6 +5,9 @@
 
 ## Who am I?
 
+<!-- .slide: data-state="no-title-footer" -->
+
+- 황광윤. 테스트.
 - Gwang Yoon Hwang
 - Hacker in Igalia, S. L.
 - Working on WebKit Project, focused on rendering performance of WebKitGTK+ in embedded environment
@@ -88,6 +91,7 @@
 ----
 
 ![Compositing Platform layers](./images/Threaded_Compositor_Simplified_Platform_Layers.png)
+<!-- .element: class="stretch" -->
 
 ----
 
