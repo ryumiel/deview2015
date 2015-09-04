@@ -1,13 +1,10 @@
 # Accelerated compositing in WebKit: Now and in the future
-
+Gwang Yoon Hwang, yoon@igalia.com
 ----
 
 
 ## Who am I?
 
-<!-- .slide: data-state="no-title-footer" -->
-
-- 황광윤. 테스트.
 - Gwang Yoon Hwang
 - Hacker in Igalia, S. L.
 - Working on WebKit Project, focused on rendering performance of WebKitGTK+ in embedded environment
@@ -17,21 +14,94 @@
 ----
 
 
-# Accelerated Compositing
+# Before we begin
+###What is the Compositing?
 
 ----
 
+If we have a single backing store, we need to redraw almost everything for each frame
 
-![Concept of Accelerated Compositing](./images/accelerated-compositing-wk-leaves.png)
+If green and red have their own backing stores, then nothing needs "re-rasterizing" while this example animates.
+<!-- .element: class="fragment" -->
+
+<iframe data-src="./examples/simple-animation.html" width="100%" height="800px" clss="stretch"></iframe>
 
 ----
 
+## Compositing
+### The use of multiple backing stores to cache and group chunks of the render tree.
+<small>From Shawn Singh's talk: https://docs.google.com/presentation/d/1dDE5u76ZBIKmsqkWi2apx3BqV8HOcNf4xxBdyNywZR8</small>
 
-## Unfortunatly, it was not enough
+----
+
+## Steps for Rendering
+- Parsing: Nodes to DOM Tree
+- Constructing RenderObject Tree to RenderLayer Tree
+
+----
+
+### Parsing: Creates the DOM Tree from source
+![Parsing and DOM constructing](./images/parsing-and-constructing-dom.png)
+
+<small>From: https://developers.google.com/web/fundamentals/performance/critical-rendering-path/
+<br>Under the Creative Commons Attribution 3.0 Licenses</small>
+
+----
+
+### Creates the Render Tree from the DOM and the CSSOM
+![Render Tree Construction](./images/render-tree-construction.png)
+
+<small>From: https://developers.google.com/web/fundamentals/performance/critical-rendering-path/
+<br>Under the Creative Commons Attribution 3.0 Licenses</small>
+
+----
+
+### Creates the GraphicsLayer Tree and Composite it to the screen
+![Render Tree to Compositor](./images/rendertree-to-compositor.svg)
+
+----
+
+## Accelerate Compositing
+- Do not have to re-rasterize entire page for each animated frame
+ - Rasterization is expensive operation
+
+- Composite page layers on the GPU can achieve far better efficiency than the CPU
+ - GPU is specialized to handle large number of pixels
+
+- Provide more efficent/practical ways to support features
+  - Scrolling, 3D CSS, opacity, filters, WebGL, hardware video decoding, etc.
+
+----
+
+## This is not the focus of this talk
+
+----
+
+## Unfortunately, we still have problems
 
 - The main-thread is always busy (Parsing, Layout, JS ...)
 - The main-thread can be blocked by VSync
 - And we want awesome webpages which uses HTML5 features
+
+----
+
+## Example: If we have layout operations during a animation
+<iframe data-src="./examples/animation-with-layout.html" width="100%" height="900px" clss="stretch"></iframe>
+
+----
+
+## Timeline of the previous example: Best Case
+![Timeline of the previous example: Best case](./images/rendering-only-main-thread.png)
+
+----
+
+## Timeline of the previous example: Worse Case
+![Timeline of the previous example: Worse case](./images/rendering-only-main-thread-bad.png)
+
+----
+
+## Timeline of the previous example: Even Worse Case
+![Timeline of the previous example: Worst case](./images/Threaded_Compositor_Vsync2.png)
 
 ----
 
@@ -40,6 +110,7 @@
 ----
 
 ![Concept of Off-the-main-thread compositing](./images/concept-of-off-the-main-thread-compositing.png)
+<!-- .element: class="stretch" -->
 
 ----
 
@@ -57,7 +128,14 @@
 
 ----
 
-![Coordinated Graphics: Model](./images/coordinated-graphics-model.png)
+![Coordinated Graphics: Model](./images/coordinated-graphics-model.svg)
+
+----
+
+## Let's compare
+![Timeline of the previous example: Threaded case](./images/Threaded_Compositor_Vsync1.png)
+
+![Timeline of the previous example: Worst case](./images/Threaded_Compositor_Vsync2.png)
 
 ----
 

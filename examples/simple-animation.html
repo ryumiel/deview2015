@@ -1,0 +1,84 @@
+<html>
+<head>
+
+<style>
+
+.plane {
+    width: 40vh;
+    height: 40vh;
+    text-align: center;
+    font-size: 5vh;
+    overflow: hidden;
+}
+
+.absolute {
+    background:#226666;
+    color:#003333;
+    top: 25vh;
+    left: 25vh;
+    z-index: 1;
+    position: absolute;
+}
+
+.animated {
+    -webkit-animation:spin 2.5s ease-out infinite alternate;
+    background:#AA3939;
+    color:#550000;
+    display: inline-block;
+}
+
+.inlined {
+    background:#7B9F35;
+    color:#354F00;
+    top: 50vh;
+    left: 70vh;
+    display: inline-block;
+    border: 3px solid #453327;
+}
+
+
+@keyframes spin {
+  from {
+    -webkit-transform: scale(1, 1) translate(0vh, 0vh);
+    opacity: 1;
+  }
+
+  to {
+    -webkit-transform: scale(1.5, 1.5) translate(60vh, 20vh);
+    opacity: 0.5;
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+<div class="plane absolute">
+Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+</div>
+<div class="plane animated">
+Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+</div>
+<div class="plane inlined">
+It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+</div>
+<div class="plane inlined">
+It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+</div>
+<div class="plane inlined">
+It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+</div>
+<div class="plane inlined">
+It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+</div>
+<div class="plane inlined">
+It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+</div>
+
+
+
+
+
+</body>
+

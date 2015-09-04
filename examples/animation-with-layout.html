@@ -1,0 +1,94 @@
+<html>
+<head>
+
+<style>
+
+.plane {
+    width: 40vh;
+    height: 40vh;
+    text-align: center;
+    font-size: 5vh;
+    overflow: hidden;
+}
+
+.absolute {
+    background:#226666;
+    color:#003333;
+    top: 42vh;
+    left: 125vh;
+    z-index: 1;
+    position: absolute;
+    -webkit-animation:bounce 1s linear infinite;
+}
+
+.animated {
+    -webkit-animation:layout 2.5s ease-out infinite alternate;
+    background:#AA3939;
+    color:#550000;
+    display: inline-block;
+}
+
+.inlined {
+    background:#7B9F35;
+    color:#354F00;
+    top: 50vh;
+    left: 70vh;
+    display: inline-block;
+    border: 3px solid #453327;
+}
+
+
+@keyframes layout {
+  from {
+    margin-left: 5vh;
+    opacity: 1;
+  }
+
+  to {
+    margin-left: 50vh;
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1.0;
+  }
+  40% {
+    transform: translateY(-30px) rotate(10deg);
+  }
+  60% {
+    transform: translateY(-15px) rotate(-10deg);
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+<div class="plane absolute">
+I have a fixed keyframe animation.
+</div>
+<div class="plane animated">
+I'm changing my margin for each frame.
+</div>
+<div class="plane inlined">
+I need to be re-layouted for each frame.
+</div>
+<div class="plane inlined">
+I need to be re-layouted for each frame.
+</div>
+<div class="plane inlined">
+I need to be re-layouted for each frame.
+</div>
+<div class="plane inlined">
+I need to be re-layouted for each frame.
+</div>
+<div class="plane inlined">
+I need to be re-layouted for each frame.
+</div>
+
+</body>
+
