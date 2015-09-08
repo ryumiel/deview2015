@@ -121,25 +121,100 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ----
 
-## What we are (going to) using: Coordinated Graphics
+### Worst case
+![Timeline of the previous example: Worst case](./images/Threaded_Compositor_Vsync2.png)
+### Same case with dedicated compositing thread
+![Timeline of the previous example: Threaded case](./images/Threaded_Compositor_Vsync1.png)
+
+----
+
+## What we are (going to) using now
+### Coordinated Graphics with threaded or process model
 
 - It implement a dedicated compositing thread in WebProcess or UIProcess.
 - Depends on OpenGL[ES] only: Easy to port to other enviroment
 
 ----
 
+<!-- .slide: data-state="no-title-footer" -->
 ![Coordinated Graphics: Model](./images/coordinated-graphics-model.svg)
 
 ----
 
-## Let's compare
-![Timeline of the previous example: Threaded case](./images/Threaded_Compositor_Vsync1.png)
-
-![Timeline of the previous example: Worst case](./images/Threaded_Compositor_Vsync2.png)
+### Sequence Diagram: Updating Animation 1
+![Sequence Diagram: Updating Animation 1](./images/Threaded_Compositor_Update_Animation_1.png)
 
 ----
 
-## Unfortunatly, it is not enough
+### Sequence Diagram: Updating Animation 2
+![Sequence Diagram: Updating Animation 2](./images/Threaded_Compositor_Update_Animation_2.png)
+
+----
+
+### Sequence Diagram: Scrolling without compositing thread
+![Scrolling without compositing thread](./images/Threaded_Compositor_Simplified_Normal_Scrolling.png)
+
+----
+
+### Sequence Diagram: Scrolling with compositing thread
+![Scrolling with compositing thread](./images/Threaded_Compositor_Simplified_Threaded_Scrolling.png)
+
+----
+
+## So, Off-the-main-thread Compositing does
+
+- Utilize multi-core CPUs and GPU
+- Play CSS Animation off-the-main-thread
+- Reduce latencies of scrolling and scaling operations
+
+----
+
+# WebGL, HTML5 2D Canvas and HTML5 Video
+
+----
+
+## Problem of Supporting WebGL
+
+- WebGL executes OpenGLES commands at the main-thread in WebProcess.
+ - Synchronization!
+- Anti-aliasing consumes a lot of memory bandwidth
+
+----
+
+### Synchronization: UI SIDE COMPOSITING Case
+
+![Cross Process Rendering: WebGL](./images/WebGL-crossprocess.svg)
+
+----
+
+### Cross Process Shareable GL Surface
+
+- Texture is not shareable across processes
+- X Windows System: Allocate memory in the X server via pixmap or offscreen window
+- The rendered frame buffer should be copied to **a cross-process-sharable** GL surface
+<!-- .element: class="fragment" -->
+- Needs cross process synchronization between updates
+ - No standards
+
+
+----
+
+### Synchronization: Threaded Case
+
+![Cross Thread Rendering: WebGL](./images/WebGL-crossthread.svg)
+
+----
+
+### Synchronization: Threaded Case
+
+- Uses normal texture from GraphicsContext3D
+- Uses double buffer without coping textures
+- Needs cross thread synchronization between updates
+ - EGLSyncObject (Unstable)
+
+----
+
+## Unfortunately, it is not enough
 
 - Texture Uploading: Upload rasterized bitmaps to textures for normal contents
 - texture to texture copy: Pass rendered results from WebGL or Canvas to the compositor
