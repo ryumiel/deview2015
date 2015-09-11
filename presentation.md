@@ -214,37 +214,37 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ----
 
-## Unfortunately, it is not enough
+## Problem of Supporting HTML5 2D Canvas
 
-- Texture Uploading: Upload rasterized bitmaps to textures for normal contents
-- texture to texture copy: Pass rendered results from WebGL or Canvas to the compositor
-- Even worse if we need to share textures across processes
-
-----
-
-# Toward to Zero-Copy Compositing in WebKitGTK+
+### Same with WebGL's case
+- GPU Accelerated 2D vector graphics library executes OpenGLES commands at the main-thread in WebProcess.
+ - Synchronization!
+- Anti-aliasing consumes a lot of memory bandwidth
 
 ----
 
-## Reduce texture uploading
+### Solutions are also almost same with WebGL, except:
+We cannot avoid texture copy operations to support accumulate rendering
 
-- We can rasterize contents to textures if we are using cairo-gl
-- However, it is not silver bullet
-- For example: if you render a webpage with complex asian characters..
-- Needs more investigations and tests
+<iframe data-src="./examples/canvas.html" width="1200px" height="600px" clss="stretch"></iframe>
 
 ----
 
-## Remove texture copy
+## Problem of Supporting HTML5 2D Video
 
-- We can remove copies in Coordinated Graphics with Threaded mode (a.k.a. Threaded Compositor)
-- For HTML5 Video and HTML5 WebGL, we don't have to use copy operations at all.
-- For HTML5 2D Canvas, we need to preserve copy operation to support accumulated rendering.
+### A little bit different with WebGL's case
+- GPU Accelerated video decoder uses GPU's API at the decoder threads in WebProcess.
+ - Synchronization!
+
+----
+
+### Solutions are also almost same with WebGL, except:
+- Need to implement multimedia backend specific codes to avoid texture copies
+- Need to implement a S/W fallback
 
 ----
 
 ![Compositing Platform layers](./images/Threaded_Compositor_Simplified_Platform_Layers.png)
-<!-- .element: class="stretch" -->
 
 ----
 
@@ -252,9 +252,28 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ----
 
+## Current Status of Coordinated Graphics : Threaded Mode
+
 - You can build WebKitGTK+ with a --threaded-compositor flag
-- However, It doesn't support WebGL, Canvas and Video yet
+- However, It doesn't support WebGL, Canvas and Video yet in the upstream
 - Most of codes to support those features are ready, however we need to test it seriously before using it as a default
+
+----
+
+## Current Status of Coordinated Graphics : Process Mode
+
+- WebKitEFL uses it as a default
+- Fully functional
+
+----
+
+## To Do
+
+### Add a compositing thread to the Process Mode
+
+### Rasterize contents to textures
+
+### Unify codes with Apple's rendering system
 
 ----
 

@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+  body {
+    margin: 0px;
+    padding: 0px;
+  }
+</style>
+
+<script>
+  var width = 1000;
+  var height = 800;
+  var radius = 10;
+
+  var deltax = radius / 2;
+  var deltay = radius / 2;
+
+  var x = radius;
+  var y = radius;
+
+  function draw() {
+
+    if (x >= width - radius) {
+      y += deltay;
+      deltax = - radius / 2;
+    }
+
+    if ( x <= radius) {
+      deltax = radius / 2;
+    }
+
+    if ( y <= radius) {
+      deltay = radius / 2;
+    }
+
+    if (y >= height - radius){
+      deltay = -radius / 2;
+    }
+
+    var canvas = document.getElementById('myCanvas');
+    var context = canvas.getContext('2d');
+
+    clearWithAlpha(0.05);
+
+    context.beginPath();
+    context.arc(x, y, radius, 0, 2 * Math.PI);
+    context.fillStyle = '#A64500';
+    context.fill();
+
+    x += deltax;
+    y += deltay;
+
+    window.requestAnimationFrame(draw);
+  }
+
+  function clearWithAlpha(alpha) {
+    var canvas = document.getElementById('myCanvas');
+    var context = canvas.getContext('2d');
+
+    context.fillStyle = 'rgba(0, 104, 90,' +  alpha + ')';
+    context.fillRect(0, 0, width, height);
+  }
+
+  window.onload = function() {
+    clearWithAlpha(1.0);
+    window.requestAnimationFrame(draw);
+  }
+
+</script>
+</head>
+
+<body>
+  <canvas id="myCanvas" width="1000" height="800"></canvas>
+</body>
+</html>
