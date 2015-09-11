@@ -226,7 +226,7 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 ### Solutions are also almost same with WebGL, except:
 We cannot avoid texture copy operations to support accumulate rendering
 
-<iframe data-src="./examples/canvas.html" width="1200px" height="600px" clss="stretch"></iframe>
+<iframe data-src="./examples/canvas.html" width="1200px" height="900px" clss="stretch"></iframe>
 
 ----
 
