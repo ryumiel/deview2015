@@ -41,11 +41,11 @@
     var canvas = document.getElementById('myCanvas');
     var context = canvas.getContext('2d');
 
-    clearWithAlpha(0.05);
+    clearWithAlpha(0.02);
 
     context.beginPath();
     context.arc(x, y, radius, 0, 2 * Math.PI);
-    context.fillStyle = '#A64500';
+    context.fillStyle = '#FFFF00';
     context.fill();
 
     x += deltax;
@@ -58,7 +58,7 @@
     var canvas = document.getElementById('myCanvas');
     var context = canvas.getContext('2d');
 
-    context.fillStyle = 'rgba(0, 104, 90,' +  alpha + ')';
+    context.fillStyle = 'rgba(0, 0, 0,' +  alpha + ')';
     context.fillRect(0, 0, width, height);
   }
 
