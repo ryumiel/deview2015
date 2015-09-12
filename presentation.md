@@ -1,5 +1,9 @@
 # Accelerated compositing in WebKit: Now and in the future
-Gwang Yoon Hwang, yoon@igalia.com
+
+Gwang Yoon Hwang
+
+<small>yoon@igalia.com</small>
+
 ----
 
 
