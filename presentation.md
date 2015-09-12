@@ -20,6 +20,8 @@ Gwang Yoon Hwang, yoon@igalia.com
 
 ----
 
+<!-- .slide: data-state="no-title-footer" -->
+
 If we have a single backing store, we need to redraw almost everything for each frame
 
 If green and red have their own backing stores, then nothing needs "re-rasterizing" while this example animates.
@@ -57,6 +59,7 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ----
 
+<!-- .slide: data-state="no-title-footer" -->
 ### Creating the GraphicsLayer Tree and Compositing It
 ![Render Tree to Compositor](./images/rendertree-to-compositor.svg)
 
@@ -225,10 +228,16 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ----
 
+<!-- .slide: data-state="no-title-footer" -->
 ### Solutions are also almost same with WebGL, except:
 We cannot avoid texture copy operations to support accumulate rendering
 
 <iframe data-src="./examples/canvas.html" width="1200px" height="900px" clss="stretch"></iframe>
+
+----
+
+### Overview: HTML5 2D Canvas Compositing
+![HTML5 2D Canvas Compositing Overview](./images//Canvas-crossthread.svg)
 
 ----
 
@@ -246,6 +255,13 @@ We cannot avoid texture copy operations to support accumulate rendering
 
 ----
 
+### Overview: HTML5 Video Compositing
+![HTML5 Video Compositing Overview](./images/Video-crossthread.svg)
+
+----
+
+<!-- .slide: data-state="no-title-footer" -->
+Overview: Putting It All Together
 ![Compositing Platform layers](./images/Threaded_Compositor_Simplified_Platform_Layers.png)
 
 ----
@@ -254,7 +270,7 @@ We cannot avoid texture copy operations to support accumulate rendering
 
 ----
 
-## Current Status of Coordinated Graphics : Threaded Mode
+### Current Status of Coordinated Graphics<br> Threaded Mode
 
 - You can build WebKitGTK+ with a --threaded-compositor flag
 - However, It doesn't support WebGL, Canvas and Video yet in the upstream
@@ -262,7 +278,7 @@ We cannot avoid texture copy operations to support accumulate rendering
 
 ----
 
-## Current Status of Coordinated Graphics : Process Mode
+### Current Status of Coordinated Graphics<br> Process Mode
 
 - WebKitEFL uses it as a default
 - Fully functional
