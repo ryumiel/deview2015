@@ -7,7 +7,8 @@ Gwang Yoon Hwang, yoon@igalia.com
 
 - Gwang Yoon Hwang
 - Hacker in Igalia, S. L.
-- Working on WebKit Project, focused on rendering performance of WebKitGTK+ in embedded environment
+- Working on WebKit/Chromium Project
+- Focused on the rendering performance in embedded environment
 
 ![](images/igalia-cover.png)
 
@@ -48,7 +49,7 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ----
 
-### Creates the Render Tree from the DOM and the CSSOM
+### Creating the Render Tree
 ![Render Tree Construction](./images/render-tree-construction.png)
 
 <small>From: https://developers.google.com/web/fundamentals/performance/critical-rendering-path/
@@ -56,7 +57,7 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ----
 
-### Creates the GraphicsLayer Tree and Composite it to the screen
+### Creating the GraphicsLayer Tree and Compositing It
 ![Render Tree to Compositor](./images/rendertree-to-compositor.svg)
 
 ----
@@ -90,17 +91,17 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ----
 
-## Timeline of the previous example: Best Case
+## Timeline : Best Case
 ![Timeline of the previous example: Best case](./images/rendering-only-main-thread.png)
 
 ----
 
-## Timeline of the previous example: Worse Case
+## Timeline : Worse
 ![Timeline of the previous example: Worse case](./images/rendering-only-main-thread-bad.png)
 
 ----
 
-## Timeline of the previous example: Even Worse Case
+## Timeline : Even Worse
 ![Timeline of the previous example: Worst case](./images/Threaded_Compositor_Vsync2.png)
 
 ----
@@ -114,7 +115,7 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ----
 
-## Compositing in the dedicated thread / or process
+## Compositing in the dedicated thread or process
 
 - The main-thread don't have to care about Vsync and compositing operations
 - It shows more smooth CSS animations, zoom, and scale operations.
@@ -161,7 +162,7 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ----
 
-## So, Off-the-main-thread Compositing does
+## So, Off-the-main-thread Compositing :
 
 - Utilize multi-core CPUs and GPU
 - Play CSS Animation off-the-main-thread
@@ -175,7 +176,7 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ## Problem of Supporting WebGL
 
-- WebGL executes OpenGLES commands at the main-thread in WebProcess.
+- WebGL executes OpenGLES commands at the main-thread in WebProcess
  - Synchronization!
 - Anti-aliasing consumes a lot of memory bandwidth
 
@@ -190,8 +191,9 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 ### Cross Process Shareable GL Surface
 
 - Texture is not shareable across processes
-- X Windows System: Allocate memory in the X server via pixmap or offscreen window
-- The rendered frame buffer should be copied to **a cross-process-sharable** GL surface
+- X Windows System
+ - Allocate memory in the X server via pixmap or offscreen window
+- The rendered texture should be copied to **a cross-process-sharable** GL surface
 <!-- .element: class="fragment" -->
 - Needs cross process synchronization between updates
  - No standards
@@ -217,7 +219,7 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 ## Problem of Supporting HTML5 2D Canvas
 
 ### Same with WebGL's case
-- GPU Accelerated 2D vector graphics library executes OpenGLES commands at the main-thread in WebProcess.
+- GPU Accelerated 2D vector graphics library executes OpenGLES commands at the main-thread in WebProcess
  - Synchronization!
 - Anti-aliasing consumes a lot of memory bandwidth
 
@@ -233,7 +235,7 @@ We cannot avoid texture copy operations to support accumulate rendering
 ## Problem of Supporting HTML5 2D Video
 
 ### A little bit different with WebGL's case
-- GPU Accelerated video decoder uses GPU's API at the decoder threads in WebProcess.
+- GPU Accelerated video decoder uses GPU's API at the decoder threads in WebProcess
  - Synchronization!
 
 ----
