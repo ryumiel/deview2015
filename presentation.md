@@ -1,43 +1,48 @@
-# Accelerated compositing in WebKit: Now and in the future
+# Maximizing the performance of HTML5 Video in RPi2
 
 Gwang Yoon Hwang
 
 <small>yoon@igalia.com</small>
 
-----
-
-
-## Who am I?
-
-- Gwang Yoon Hwang
-- Hacker in Igalia, S. L.
-- Working on WebKit/Chromium Project
-- Focused on the rendering performance in embedded environment
-
 ![](images/igalia-cover.png)
 
 ----
 
+# What is the HTML5 Video?
 
-# Before we begin
-###What is the Compositing?
+```
+<video width="1280" height="720" autoplay loop>
+    <source src="big_buck_bunny.mp4" type="video/mp4" />
+</video>
+```
 
-----
+<iframe data-src="./examples/video.html" width="100%" height="800px" clss="stretch"></iframe>
 
-<!-- .slide: data-state="no-title-footer" -->
-
-If we have a single backing store, we need to redraw almost everything for each frame
-
-If green and red have their own backing stores, then nothing needs "re-rasterizing" while this example animates.
-<!-- .element: class="fragment" -->
-
-<iframe data-src="./examples/simple-animation.html" width="100%" height="800px" clss="stretch"></iframe>
 
 ----
 
-## Compositing
-### The use of multiple backing stores to cache and group chunks of the render tree.
-<small>From Shawn Singh's talk: https://docs.google.com/presentation/d/1dDE5u76ZBIKmsqkWi2apx3BqV8HOcNf4xxBdyNywZR8</small>
+# WebKit - a portable Web rendering engine
+
+- PCs, phones, TVs, IVI, smartwatches, **Raspberry Pi**
+- Mac, iOS, EFL, **GTK**
+
+----
+
+## WebKitGTK+
+
+- Full-featured port of the WebKit rendering engine
+- Useful in a wide rage of systems from desktop to embedded
+
+## WebKitForWayland
+
+- Avoids using any toolkit
+- Defaults to EGL, OpenGL ES for accelerated rendering of Web content
+- Optimized for displaying the fullscreen web content
+-- Youtube TV, Information displays, IVI, STBs..
+
+----
+
+# How WebKit Renders WebPage
 
 ----
 
@@ -69,54 +74,20 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ----
 
-## Accelerate Compositing
-- Do not have to re-rasterize entire page for each animated frame
- - Rasterization is expensive operation
-
-- Composite page layers on the GPU can achieve far better efficiency than the CPU
- - GPU is specialized to handle large number of pixels
-
-- Provide more efficent/practical ways to support features
-  - Scrolling, 3D CSS, opacity, filters, WebGL, hardware video decoding, etc.
-
-----
-
-## This is not the focus of this talk
-
-----
-
-## Unfortunately, we still have problems
+## Problems
 
 - The main-thread is always busy (Parsing, Layout, JS ...)
 - The main-thread can be blocked by VSync
-- And we want awesome webpages which uses HTML5 features
+- And we want awesome webpages which uses HTML5 Video
 
 ----
 
-## Example: If we have layout operations during a animation
-<iframe data-src="./examples/animation-with-layout.html" width="100%" height="900px" clss="stretch"></iframe>
-
-----
-
-## Timeline : Best Case
-![Timeline of the previous example: Best case](./images/rendering-only-main-thread.png)
-
-----
-
-## Timeline : Worse
-![Timeline of the previous example: Worse case](./images/rendering-only-main-thread-bad.png)
-
-----
-
-## Timeline : Even Worse
+### VSync : Worst Case
 ![Timeline of the previous example: Worst case](./images/Threaded_Compositor_Vsync2.png)
 
 ----
 
-# Off-the-main-thread Compositing
-
-----
-
+## Off-the-main-thread Compositing
 ![Concept of Off-the-main-thread compositing](./images/concept-of-off-the-main-thread-compositing.png)
 <!-- .element: class="stretch" -->
 
@@ -124,8 +95,19 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ## Compositing in the dedicated thread or process
 
-- The main-thread don't have to care about Vsync and compositing operations
+- Free the main-thread from the Vsync and compositing operations
 - It shows more smooth CSS animations, zoom, and scale operations.
+
+----
+
+<!-- .slide: data-state="no-title-footer" -->
+![Render Tree to Compositor](./images/rendertree-to-compositor-threaded.svg)
+
+----
+
+<!-- .slide: data-state="no-title-footer" -->
+![Render Tree to Compositor](./images/coordinated-graphics-model.svg)
+
 
 ----
 
@@ -136,167 +118,89 @@ If green and red have their own backing stores, then nothing needs "re-rasterizi
 
 ----
 
-## What we are (going to) using now
-### Coordinated Graphics with threaded or process model
+### What we have done : WebKitGTK / WebKitForWayland
 
-- It implement a dedicated compositing thread in WebProcess or UIProcess.
-- Depends on OpenGL[ES] only: Easy to port to other enviroment
-
-----
-
-<!-- .slide: data-state="no-title-footer" -->
-![Coordinated Graphics: Model](./images/coordinated-graphics-model.svg)
-
-----
-
-### Sequence Diagram: Updating Animation 1
-![Sequence Diagram: Updating Animation 1](./images/Threaded_Compositor_Update_Animation_1.png)
-
-----
-
-### Sequence Diagram: Updating Animation 2
-![Sequence Diagram: Updating Animation 2](./images/Threaded_Compositor_Update_Animation_2.png)
-
-----
-
-### Sequence Diagram: Scrolling without compositing thread
-![Scrolling without compositing thread](./images/Threaded_Compositor_Simplified_Normal_Scrolling.png)
-
-----
-
-### Sequence Diagram: Scrolling with compositing thread
-![Scrolling with compositing thread](./images/Threaded_Compositor_Simplified_Threaded_Scrolling.png)
-
-----
-
-## So, Off-the-main-thread Compositing :
-
+- Split compositing operations into the dedicated thread
 - Utilize multi-core CPUs and GPU
 - Play CSS Animation off-the-main-thread
 - Reduce latencies of scrolling and scaling operations
 
 ----
 
-# WebGL, HTML5 2D Canvas and HTML5 Video
+## Video Rendering
 
 ----
 
-## Problem of Supporting WebGL
-
-- WebGL executes OpenGLES commands at the main-thread in WebProcess
- - Synchronization!
-- Anti-aliasing consumes a lot of memory bandwidth
-
-----
-
-### Synchronization: UI SIDE COMPOSITING Case
-
-![Cross Process Rendering: WebGL](./images/WebGL-crossprocess.svg)
+### GStreamer
+- Open source media framework for multimedia playback.
+- GStreamer constructs graphs of media-handling components.
+- Supports playback, streaming, complex audio mixing and non-linear video processing
+- Can handle muxers/demuxers and codecs transparently.
+- Add codecs/filters by writing plugins with a generic interface
+- A major version is API and ABI stable.
 
 ----
 
-### Cross Process Shareable GL Surface
+### GStreamer OpenMax (gst-omx)
 
-- Texture is not shareable across processes
-- X Windows System
- - Allocate memory in the X server via pixmap or offscreen window
-- The rendered texture should be copied to **a cross-process-sharable** GL surface
-<!-- .element: class="fragment" -->
-- Needs cross process synchronization between updates
- - No standards
-
+- Hardware decoders for H.264, VP8, Theora
+- meta:EGLImage
+- Custom audio sinks: HDMI and analog
+- Very good integration within playbin
 
 ----
 
-### Synchronization: Threaded Case
-
-![Cross Thread Rendering: WebGL](./images/WebGL-crossthread.svg)
-
-----
-
-### Synchronization: Threaded Case
-
-- Uses normal texture from GraphicsContext3D
-- Uses double buffer without coping textures
-- Needs cross thread synchronization between updates
- - EGLSyncObject (Unstable)
+### GStreamer Pipeline
+![GStreamer Pipeline](./images/gstreamer-pipeline.svg)
 
 ----
 
-## Problem of Supporting HTML5 2D Canvas
-
-### Same with WebGL's case
-- GPU Accelerated 2D vector graphics library executes OpenGLES commands at the main-thread in WebProcess
- - Synchronization!
-- Anti-aliasing consumes a lot of memory bandwidth
+### GStreamer Pipeline - Inefficient
+![GStreamer Video Pipeline: Inefficient](./images/gstreamer-pipeline-video-inefficient.svg)
 
 ----
 
-<!-- .slide: data-state="no-title-footer" -->
-### Solutions are also almost same with WebGL, except:
-We cannot avoid texture copy operations to support accumulate rendering
+### Polish GstOMX and GstGL to remove overheads
 
-<iframe data-src="./examples/canvas.html" width="1200px" height="900px" clss="stretch"></iframe>
-
-----
-
-### Overview: HTML5 2D Canvas Compositing
-![HTML5 2D Canvas Compositing Overview](./images//Canvas-crossthread.svg)
+- GstGLMemoryEGL (EGLImage + GLMemory)
+- Remove additional texture allocations and copy operations
+- **Passthrough**
 
 ----
 
-## Problem of Supporting HTML5 2D Video
-
-### A little bit different with WebGL's case
-- GPU Accelerated video decoder uses GPU's API at the decoder threads in WebProcess
- - Synchronization!
+### GStreamer Pipeline - Efficient
+![GStreamer Video Pipeline: Efficient](./images/gstreamer-pipeline-video-efficient.svg)
 
 ----
 
-### Solutions are also almost same with WebGL, except:
-- Need to implement multimedia backend specific codes to avoid texture copies
-- Need to implement a S/W fallback
-
-----
-
-### Overview: HTML5 Video Compositing
+### Composite Decoded Frame
 ![HTML5 Video Compositing Overview](./images/Video-crossthread.svg)
 
 ----
 
+### Composite Decoded Frame
+
+- Pass the decoded frame to the compositor directly
+- Compositor composites the video without waiting main-thread
+
+----
+
 <!-- .slide: data-state="no-title-footer" -->
-Overview: Putting It All Together
 ![Compositing Platform layers](./images/Threaded_Compositor_Simplified_Platform_Layers.png)
 
 ----
 
-# Current Status and Future
+### Test results on the Raspberry Pi2
+
+- Targeting 720p, 1080p
+- 30 FPS on HTML5 Video playback
+- 40-50 FPS with a 720p HTML5 Video and WebGL at same time
+- Reduced memory consumption
+- Still, needs to reduce ghost copies of decoded frame
 
 ----
 
-### Current Status of Coordinated Graphics<br> Threaded Mode
+## Thank you
 
-- You can build WebKitGTK+ with a --threaded-compositor flag
-- However, It doesn't support WebGL, Canvas and Video yet in the upstream
-- Most of codes to support those features are ready, however we need to test it seriously before using it as a default
+### Questions?
 
-----
-
-### Current Status of Coordinated Graphics<br> Process Mode
-
-- WebKitEFL uses it as a default
-- Fully functional
-
-----
-
-## To Do
-
-### Add a compositing thread to the Process Mode
-
-### Rasterize contents to textures
-
-### Unify codes with Apple's rendering system
-
-----
-
-# Thank You!
